@@ -1,25 +1,29 @@
-import logo from './logo.svg';
-import './App.css';
+require('dotenv').config();
+const express = require('express');
+const app = express();
+const dbConnection = require('./db');
+const controllers  = require('./controllers');
+// const middleware = require('./middleware');
 
-function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+app.use(express.json());
+
+// endpoints
+app.use('/user', controllers.userscontroller);
+app.use(require("./middleware/jwt-validation"))
+app.use('/review', controllers.reviewController);
+app.use('/movies', controllers.movieController);
+
+// database auth & sync
+try {
+    dbConnection
+        .authenticate()
+        .then(async () => await dbConnection.sync(  /*{force: true}*/ ))
+        .then(() => {
+            app.listen(process.env.PORT, () => {
+                console.log(`[SERVER]: App is listening on ${process.env.PORT}`);
+            });
+        });
+} catch (err) {
+    console.log('[SERVER]: Server crashed');
+    console.log(err);
 }
-
-export default App;
