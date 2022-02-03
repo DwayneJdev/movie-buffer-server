@@ -25,7 +25,7 @@ const User = db.define("user", {
   },
   Age: {
       type: DataTypes.INTEGER,
-      allowNull: false
+      allowNull: true
   },
   gender: {
       type: DataTypes.STRING,

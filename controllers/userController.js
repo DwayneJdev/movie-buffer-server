@@ -6,11 +6,14 @@ const { UniqueConstraintError } = require('sequelize/lib/errors');
 
 
 router.post('/signup', async (req, res) => {
-    const {username, password} = req.body.user;
+    const {username, password, email, role} = req.body.user;
     try {
         await models.UsersModel.create({
             username: username,
-            password: bcrypt.hashSync(password, 10)
+            password: bcrypt.hashSync(password, 10),
+            email: email,
+            role: role
+           
         })
         .then(
             user => {

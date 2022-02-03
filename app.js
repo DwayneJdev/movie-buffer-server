@@ -3,13 +3,13 @@ const express = require('express');
 const app = express();
 const dbConnection = require('./db');
 const controllers  = require('./controllers');
-// const middleware = require('./middleware');
+const middleware = require('./middleware');
 
 app.use(express.json());
 
 // endpoints
 app.use('/user', controllers.userscontroller);
-app.use(require("./middleware/jwt-validation"))
+app.use(middleware.jwtValidation);
 app.use('/review', controllers.reviewController);
 app.use('/movies', controllers.movieController);
 
@@ -17,7 +17,7 @@ app.use('/movies', controllers.movieController);
 try {
     dbConnection
         .authenticate()
-        .then(async () => await dbConnection.sync(  /*{force: true}*/ ))
+        .then(async () => await dbConnection.sync( /* {force: true} */ ))
         .then(() => {
             app.listen(process.env.PORT, () => {
                 console.log(`[SERVER]: App is listening on ${process.env.PORT}`);

@@ -68,17 +68,17 @@ router.get("/title/:title", validateJWT, async (req, res) => {
     }
 });
 
-//*** Update Review */
+// *** Update Review */
 
-router.put('/update/review/:title', validateJWT, async (req, res) => {
-    const {title} = req.params;
+router.put('/update/:title', validateJWT, async (req, res) => {
+    // const {title} = req.params;
     const {title, content} = req.body.review;
 
     try {
         const update = await models.ReviewModel.update({
             title: title,
             content: content,
-            userId: req.user.id
+           where: { userId: req.user.id}
         })
         res.status(200).json({
             update,
