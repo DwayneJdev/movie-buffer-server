@@ -6,13 +6,13 @@ const { UniqueConstraintError } = require('sequelize/lib/errors');
 
 
 router.post('/signup', async (req, res) => {
-    const {username, password, email, role} = req.body.user;
+    const {username, password, email, role} = req.body;
     try {
         await models.UsersModel.create({
             username: username,
             password: bcrypt.hashSync(password, 10),
             email: email,
-            role: role
+            
            
         })
         .then(
@@ -28,7 +28,7 @@ router.post('/signup', async (req, res) => {
     } catch (err) {
         if (err instanceof UniqueConstraintError) {
             res.status(409).json({
-                message: 'Username already in use'
+                message: 'Username or email already in use'
             });
         } else {
             res.status(500).json({

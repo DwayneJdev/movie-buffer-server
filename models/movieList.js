@@ -28,6 +28,10 @@ const MovieList = db.define("movieList", {
     genre: {
         type: DataTypes.STRING,
         allowNull: false
+    },
+    plot: {
+        type: DataTypes.STRING,
+        allowNull: true
     }
 
 

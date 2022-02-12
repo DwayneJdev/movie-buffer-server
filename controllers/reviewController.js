@@ -51,35 +51,37 @@ router.get("/:username", validateJWT, async (req, res) => {
 
 //**** Get all reviews by title */
 
-router.get("/title/:title", validateJWT, async (req, res) => {
-    const {title} = req.params;
+// router.get("/title/:title", validateJWT, async (req, res) => {
+//     const {title} = req.params;
 
-    try{
-       const titleReview = await models.ReviewModel.findAll({
-            title: title
-        })
+//     try{
+//        const titleReview = await models.ReviewModel.findAll({
+//             title: title
+//         })
         
-                res.status(201).json(titleReview)
+//                 res.status(201).json(titleReview)
         
-    } catch (err) {
-        res.status(500).json({
-            error: `Failed to get review: ${err}`
-        })
-    }
-});
+//     } catch (err) {
+//         res.status(500).json({
+//             error: `Failed to get review: ${err}`
+//         })
+//     }
+// });
 
 // *** Update Review */
 
-router.put('/update/:title', validateJWT, async (req, res) => {
-     const {userId} = req.params;
+router.put('/update/:id', validateJWT, async (req, res) => {
+     const {id} = req.user;
     const {title, content} = req.body.review;
-
+    const reviewId = req.params.id
     try {
         const update = await models.ReviewModel.update({
             title: title,
-            content: content,
-           where: { userId: userId}
-        })
+            content: content},
+          { where: { userId: id,
+                    id: reviewId}}
+            
+        )
         res.status(200).json({
             update,
             message: 'review updated'
@@ -93,15 +95,17 @@ router.put('/update/:title', validateJWT, async (req, res) => {
 
 //*** Delete Review */
 
-router.delete("/delete/:title", validateJWT, async (req, res) =>{
-    const userId = req.user.id
-    const {title} = req.params;
+router.delete("/delete/:id", validateJWT, async (req, res) =>{
+    const {id} = req.user;
+    const reviewId = req.params.id;
     
     try {
-        await models.ReviewModel.destroy({
-            title: title,
-            userId: userId
-        })
+        await models.ReviewModel.destroy(
+           { where: {
+               userId: id,
+            id: reviewId 
+            }}
+        )
         res.status(200).json({ 
             message: "Review has been deleted"
         })
